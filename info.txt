@@ -1,0 +1,51 @@
+criar a função lambda com o nome 'my-lambda'
+aws --endpoint-url=http://localhost:4566 lambda create-function --function-name my-lambda --zip-file fileb://lambda-src/function.zip --handler index.handler --runtime nodejs12.x --role arn:aws:iam::000000000000:role/lambda-role 
+response:
+{
+    "FunctionName": "my-lambda",
+    "FunctionArn": "arn:aws:lambda:us-east-1:000000000000:function:my-lambda",
+    "Runtime": "nodejs12.x",
+    "Role": "arn:aws:iam::000000000000:role/lambda-role",
+    "Handler": "index.handler",
+    "CodeSize": 9819409,
+    "Description": "",
+    "Timeout": 3,
+    "LastModified": "2022-03-10T02:58:52.416+0000",
+    "CodeSha256": "TlzWgV7rJ7M2U1nYLeDsraaWNSE/c+VQREctp/+mFpc=",
+    "Version": "$LATEST",
+    "VpcConfig": {},
+    "TracingConfig": {
+        "Mode": "PassThrough"
+    },
+    "RevisionId": "cfe5279c-2483-4869-a4cc-75fc42d322f4",
+    "State": "Active",
+    "LastUpdateStatus": "Successful",
+    "PackageType": "Zip"
+}
+
+criando o s3 bucket com o nome 'my-bucket'
+aws --endpoint-url=http://localhost:4566 s3 mb s3://my-bucket
+response:
+make_bucket: my-bucket
+
+criando o s3 bucket notification
+aws --endpoint-url=http://localhost:4566 \
+s3api put-bucket-notification-configuration --bucket my-bucket \
+--notification-configuration file://s3-notif-config.json
+response:
+N / A
+
+
+upload de um arquivo para o S3
+aws --endpoint-url=http://localhost:4566 \
+s3api put-object --bucket my-bucket \
+--key dummyfile.txt --body=dummyfile.txt
+response:
+{
+    "ETag": "\"d41d8cd98f00b204e9800998ecf8427e\""
+}
+
+checando os logs
+aws --endpoint-url=http://localhost:4566 logs tail '/aws/lambda/my-lambda' --follow
+response:
+Error
